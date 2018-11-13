@@ -4,7 +4,7 @@ import org.ciroque.models.About
 import sangria.schema.{Field, IntType, ListType, ObjectType, Schema, StringType, fields}
 
 object GraphQLSchema {
-  val AboutType = ObjectType[Unit, About](
+  val AboutType: ObjectType[Unit, About] = ObjectType[Unit, About](
     "About",
     fields[Unit, About](
       Field("name", StringType, resolve = _.value.name),
