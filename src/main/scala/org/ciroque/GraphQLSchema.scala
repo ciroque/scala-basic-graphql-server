@@ -9,6 +9,7 @@ object GraphQLSchema {
     fields[Unit, About](
       Field("name", StringType, resolve = _.value.name),
       Field("version", StringType, resolve = _.value.version),
+      Field("license", StringType, resolve = _.value.license),
     )
   )
 
