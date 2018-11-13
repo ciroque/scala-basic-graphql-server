@@ -2,6 +2,7 @@ package org.ciroque
 
 import org.ciroque.models.{About, Lift, Trail}
 import sangria.schema.{Field, IntType, ListType, ObjectType, Schema, StringType, fields}
+import org.ciroque.resolvers._
 
 object GraphQLSchema {
   val AboutType: ObjectType[Unit, About] = ObjectType[Unit, About](
@@ -27,7 +28,7 @@ object GraphQLSchema {
     "Lift",
     fields[Unit, Lift](
       Field("id", StringType, resolve = _.value.id),
-      Field("name", StringType, resolve = _.value.name),
+      Field("name", StringType, resolve = _.value.name, description = Some("This is the name of the Lift, duh.")),
       Field("capacity", IntType, resolve = _.value.capacity)
     )
   )
@@ -35,9 +36,9 @@ object GraphQLSchema {
   val QueryType = ObjectType(
     "Query",
     fields[Any, Unit](
-      Field("about", AboutType, resolve = _ => About()),
-      Field("allLifts", ListType(LiftType), resolve = _ => List(Lift("ABCD1234", "Whisper Hill Lift", 27, "OPEN"))),
-      Field("allTrails", ListType(TrailType), resolve = _ => List(Trail("ABCD1234", "Whisper Hill", "Easy", "OPEN")))
+      Field("about", ListType(AboutType), resolve = c => AboutResolver(c)),
+      Field("allLifts", ListType(LiftType), resolve = c => LiftResolver(c)),
+      Field("allTrails", ListType(TrailType), resolve = c => TrailResolver(c))
     )
   )
 
