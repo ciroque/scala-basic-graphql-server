@@ -36,7 +36,7 @@ object GraphQLSchema {
   val QueryType = ObjectType(
     "Query",
     fields[Any, Unit](
-      Field("about", ListType(AboutType), resolve = c => AboutResolver(c)),
+      Field("about", AboutType, resolve = c => AboutResolver(c)),
       Field("allLifts", ListType(LiftType), resolve = c => LiftResolver(c)),
       Field("allTrails", ListType(TrailType), resolve = c => TrailResolver(c))
     )

@@ -1,5 +1,9 @@
 package org.ciroque.resolvers
 
-trait Resolver[T] {
+trait SeqResolver[T] {
   def apply(context: Any): Seq[T]
+}
+
+trait Resolver[T] {
+  def apply(context: Any): T
 }
