@@ -20,8 +20,6 @@ object GraphQLServer {
     val JsString(query) = fields("query")
     QueryParser.parse(query) match {
       case Success(queryAst) =>
-        println(s"YEY: $queryAst")
-
         val operation = fields.get("operationName") collect {
           case JsString(op) => op
         }
@@ -33,9 +31,13 @@ object GraphQLServer {
 
         complete(executeGraphQLQuery(queryAst, operation, variables))
 
-      case Failure(error) =>
-        println(s"BOO: $error")
-        complete(NotImplemented, "Come back tomorrow, Indiana Jones")
+      case Failure(error: Throwable) =>
+        val body = JsObject(
+          "message" -> JsString("Something went horribly horribly wrong..."),
+          "error" -> JsString(error.getMessage()),
+          "tag" -> JsString("Come back tomorrow, Indiana Jones.")
+        )
+        complete(BadRequest, body)
     }
   }
 
