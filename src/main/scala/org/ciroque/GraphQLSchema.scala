@@ -40,7 +40,7 @@ object GraphQLSchema {
   val QueryType = ObjectType(
     "Query",
     fields[Any, Unit](
-      Field("about", AboutType, resolve = c => AboutResolver(SeqArgs())),
+      Field("about", AboutType, resolve = c => AboutResolver()),
       Field(
         "allLifts",
         ListType(LiftType),
