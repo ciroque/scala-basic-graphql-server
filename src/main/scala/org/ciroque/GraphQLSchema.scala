@@ -1,10 +1,14 @@
 package org.ciroque
 
 import org.ciroque.models.{About, Lift, Trail}
-import sangria.schema.{Field, IntType, ListType, ObjectType, Schema, StringType, fields}
+import sangria.schema.{Argument, Field, IntType, ListType, ObjectType, OptionInputType, Schema, StringType, fields}
 import org.ciroque.resolvers._
 
 object GraphQLSchema {
+  val IdArg = Argument("id", OptionInputType(StringType), description = "Search by the known ID of an entity")
+  val LimitArg = Argument("limit", OptionInputType(IntType), defaultValue = 20)
+  val OffsetArg = Argument("offset", OptionInputType(IntType), defaultValue = 0)
+
   val AboutType: ObjectType[Unit, About] = ObjectType[Unit, About](
     "About",
     fields[Unit, About](
@@ -36,9 +40,14 @@ object GraphQLSchema {
   val QueryType = ObjectType(
     "Query",
     fields[Any, Unit](
-      Field("about", AboutType, resolve = c => AboutResolver(c)),
-      Field("allLifts", ListType(LiftType), resolve = c => LiftResolver(c)),
-      Field("allTrails", ListType(TrailType), resolve = c => TrailResolver(c))
+      Field("about", AboutType, resolve = c => AboutResolver(SeqArgs())),
+      Field(
+        "allLifts",
+        ListType(LiftType),
+        resolve = c => LiftResolver(SeqArgs(c arg IdArg, c arg LimitArg, c arg OffsetArg)),
+        arguments = IdArg :: LimitArg :: OffsetArg :: Nil
+      ),
+      Field("allTrails", ListType(TrailType), resolve = c => TrailResolver(SeqArgs()))
     )
   )
 
